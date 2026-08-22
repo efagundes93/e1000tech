@@ -1,0 +1,87 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@import "@fontsource/source-serif-4/400.css";
+@import "@fontsource/source-serif-4/600.css";
+@import "@fontsource/source-serif-4/700.css";
+@import "@fontsource/source-serif-4/400-italic.css";
+@import "@fontsource-variable/inter";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/jetbrains-mono/700.css";
+
+/*
+  Paleta "Editorial Técnico": fundo claro e quente, tipografia serif nos
+  títulos, sans no corpo, mono em labels/código, acento azul-petróleo.
+*/
+@theme {
+  --color-paper: #faf9f6;
+  --color-surface: #ffffff;
+  --color-ink: #1c1917;
+  --color-ink-muted: #57534e;
+  --color-ink-soft: #78716c;
+  --color-line: #e7e4de;
+  --color-accent: #114b5f;
+  --color-accent-strong: #0b3745;
+  --color-accent-soft: #dbe9ec;
+  --color-code: #f2efe9;
+
+  --font-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-sans: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  ::selection {
+    @apply bg-accent-soft text-accent-strong;
+  }
+
+  a {
+    @apply text-accent underline decoration-accent/30 underline-offset-2 transition-colors;
+  }
+
+  a:hover {
+    @apply decoration-accent;
+  }
+
+  ::-moz-selection {
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+  }
+}
+
+/*
+  Diagramas Mermaid: moldura consistente com o resto do editorial.
+  astro-mermaid marca o <pre> com [data-processed] após renderizar no
+  cliente e aplica seu próprio estilo com essa mesma especificidade, então
+  usamos !important aqui para garantir que a moldura do site prevaleça
+  nos dois estados (antes e depois da hidratação).
+*/
+.mermaid-diagram-container,
+pre.mermaid,
+pre.mermaid[data-processed] {
+  margin-block: calc(var(--spacing) * 8) !important;
+  display: flex !important;
+  justify-content: center !important;
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--color-line) !important;
+  background-color: var(--color-surface) !important;
+  padding: calc(var(--spacing) * 4) !important;
+}
+
+/* Estilização de blocos de código gerados pelo Shiki */
+pre.astro-code {
+  @apply rounded-lg border border-line p-4 text-sm leading-relaxed;
+  font-family: var(--font-mono);
+}

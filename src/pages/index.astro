@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+import { SITE_TITLE, SITE_TAGLINE, AUTHOR_BIO } from "../consts";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const latestPosts = posts.slice(0, 6);
+---
+
+<BaseLayout title={SITE_TITLE} description={SITE_TAGLINE}>
+  <section class="mb-16">
+    <h1 class="font-serif text-4xl font-bold leading-tight text-ink sm:text-5xl">
+      {SITE_TAGLINE}
+    </h1>
+    <p class="mt-5 max-w-xl text-lg text-ink-muted">{AUTHOR_BIO}</p>
+  </section>
+
+  <section>
+    <div class="mb-6 flex items-baseline justify-between">
+      <h2 class="font-mono text-sm uppercase tracking-wide text-ink-soft">Últimos posts</h2>
+      {posts.length > latestPosts.length && (
+        <a href="/blog" class="text-sm">Ver todos →</a>
+      )}
+    </div>
+    <div>
+      {latestPosts.map((post) => <PostCard post={post} />)}
+      {latestPosts.length === 0 && (
+        <p class="text-ink-muted">Ainda não há posts publicados. Volte em breve.</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>

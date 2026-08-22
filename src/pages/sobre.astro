@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { AUTHOR_NAME, AUTHOR_ROLE } from "../consts";
+---
+
+<BaseLayout
+  title="Sobre"
+  description="Quem escreve o e1000: engenharia, produto e as decisões por trás do Kikwiflow."
+>
+  <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">Sobre</p>
+  <h1 class="mt-2 font-serif text-4xl font-bold text-ink">{AUTHOR_NAME}</h1>
+  <p class="mt-1 text-ink-muted">{AUTHOR_ROLE}</p>
+
+  <div
+    class="prose prose-neutral mt-8 max-w-none
+           prose-headings:font-serif prose-headings:text-ink
+           prose-p:text-ink prose-p:leading-relaxed
+           prose-a:text-accent"
+  >
+    <p>
+      Sou founder da <strong>atoxfy</strong> e idealizador do <strong>Kikwiflow</strong>,
+      plataforma que conecta automação determinística e agentes de IA no ciclo de
+      desenvolvimento de software. Depois de anos construindo e operando sistemas em
+      bancos e empresas de tecnologia, decidi passar a documentar publicamente as
+      decisões técnicas e de produto por trás desse trabalho.
+    </p>
+    <p>
+      Este espaço existe para isso: notas técnicas, arquitetura, e a visão de mundo
+      que guia o que estou construindo — sem filtro corporativo, sem funil de
+      marketing. Só engenharia e as decisões de negócio que vêm junto com ela.
+    </p>
+    <p>
+      Se você trabalha com engenharia, produto ou lidera times que usam IA no dia a
+      dia, é bem provável que a gente fale a mesma língua.
+    </p>
+  </div>
+</BaseLayout>
