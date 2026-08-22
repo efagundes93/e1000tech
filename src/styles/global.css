@@ -145,6 +145,31 @@
 }
 
 /*
+  Cores do conteúdo .prose amarradas aos tokens do tema (não à paleta
+  neutra fixa que o Tailwind Typography usa por padrão). Sem isso, cada
+  página precisaria repetir modifiers prose-strong:/prose-a:/etc., e
+  esquecer um deles — como aconteceu em /sobre — faz o texto herdar a
+  cor fixa do plugin e sumir no fundo escuro do modo dark.
+*/
+.prose {
+  --tw-prose-body: var(--color-ink);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-lead: var(--color-ink-muted);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bullets: var(--color-ink-soft);
+  --tw-prose-counters: var(--color-accent);
+  --tw-prose-quotes: var(--color-ink-muted);
+  --tw-prose-quote-borders: var(--color-accent);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-th-borders: var(--color-line);
+  --tw-prose-td-borders: var(--color-line);
+  --tw-prose-captions: var(--color-ink-soft);
+  --tw-prose-kbd: var(--color-ink);
+  --tw-prose-code: var(--color-ink);
+}
+
+/*
   Grid de "breakout": o texto lê numa coluna confortável (56rem — o mesmo
   max-w-4xl do cabeçalho do post, pra título e corpo ficarem alinhados),
   mas blocos de código, diagramas Mermaid e mídia (vídeo/GIF) podem ocupar
