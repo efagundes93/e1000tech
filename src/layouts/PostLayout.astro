@@ -34,7 +34,7 @@ const formattedDate = pubDate.toLocaleDateString("pt-BR", {
   wide
 >
   <article>
-    <header class="mx-auto mb-10 max-w-3xl">
+    <header class="mx-auto mb-10 max-w-4xl">
       <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">
         {formattedDate} · {readingMinutes} min de leitura
       </p>
@@ -46,7 +46,7 @@ const formattedDate = pubDate.toLocaleDateString("pt-BR", {
     </header>
 
     <div
-      class="prose prose-neutral max-w-none
+      class="prose prose-neutral prose-lg max-w-none
              prose-headings:font-display prose-headings:font-semibold prose-headings:text-ink
              prose-p:text-ink prose-p:leading-relaxed
              prose-a:text-accent prose-a:no-underline prose-a:decoration-accent/40 hover:prose-a:underline
@@ -59,7 +59,7 @@ const formattedDate = pubDate.toLocaleDateString("pt-BR", {
       <slot />
     </div>
 
-    <div class="mx-auto max-w-3xl">
+    <div class="mx-auto max-w-4xl">
       <AuthorBio />
 
       {

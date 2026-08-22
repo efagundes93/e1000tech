@@ -145,14 +145,15 @@
 }
 
 /*
-  Grid de "breakout": o texto lê numa coluna confortável (~68ch), mas
-  blocos de código, diagramas Mermaid e mídia (vídeo/GIF) podem ocupar a
-  largura inteira do artigo — é o que faltava para o diagrama de sequência
-  ficar legível sem abandonar uma coluna de leitura limpa para o texto.
+  Grid de "breakout": o texto lê numa coluna confortável (56rem — o mesmo
+  max-w-4xl do cabeçalho do post, pra título e corpo ficarem alinhados),
+  mas blocos de código, diagramas Mermaid e mídia (vídeo/GIF) podem ocupar
+  a largura inteira do artigo — é o que faltava para o diagrama de
+  sequência ficar legível sem abandonar uma coluna de leitura limpa.
 */
 .prose {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) min(68ch, 100%) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) min(56rem, 100%) minmax(0, 1fr);
 }
 
 .prose > * {
