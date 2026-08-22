@@ -1,37 +1,109 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { AUTHOR_NAME, AUTHOR_ROLE } from "../consts";
+import emilianoPhoto from "../assets/emiliano.png";
+
+const principles = [
+  {
+    title: "Abandone a falácia da estabilidade",
+    text: "A única segurança real vem da sua capacidade de gerar valor, não do seu tipo de contrato (CLT, PJ etc.). Estabilidade é uma miragem no deserto corporativo.",
+  },
+  {
+    title: 'Seja um resolvedor de problemas, não um "ferreiro digital"',
+    text: "Ferramentas e linguagens vêm e vão. Se você se apegar a elas, terá data de validade. O martelo muda, mas a arte de construir permanece. Apaixone-se pelo problema.",
+  },
+  {
+    title: "Precifique-se (antes que o mercado o faça por você)",
+    text: "Não espere que adivinhem o seu valor. Entenda o impacto do seu trabalho, saiba comunicá-lo e defenda-o.",
+  },
+  {
+    title: "Desconfie dos elogios, abrace as críticas",
+    text: "Elogios são confortáveis, mas inflam o ego. Feedbacks difíceis mostram exatamente onde você precisa crescer. Procure ativamente por seus gaps antes que eles se tornem abismos.",
+  },
+  {
+    title: "Mapeie seus heróis (e roube seus mapas)",
+    text: "Identifique quem você admira para entender suas trajetórias. O que leem? Que batalhas escolhem lutar? O sucesso deixa pistas, seja um bom detetive.",
+  },
+  {
+    title: "Diversifique ou morra",
+    text: "Nenhum investidor sério coloca todo o dinheiro em uma única ação. Construa um plano B, aprenda habilidades adjacentes e crie opções para que você nunca fique sem escolha.",
+  },
+];
 ---
 
 <BaseLayout
   title="Sobre"
-  description="Quem escreve o e1000: engenharia, produto e as decisões por trás do Kikwiflow."
+  description="Emiliano Fagundes: de servente de obras a founder da atoxfy — a trajetória e os princípios de carreira por trás do e1000."
 >
-  <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">Sobre</p>
-  <h1 class="mt-2 font-display text-4xl font-bold text-ink">{AUTHOR_NAME}</h1>
-  <p class="mt-1 text-ink-muted">{AUTHOR_ROLE}</p>
+  <div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+    <Image
+      src={emilianoPhoto}
+      alt="Emiliano Fagundes"
+      width={128}
+      height={128}
+      class="h-32 w-32 rounded-full border border-line object-cover grayscale"
+    />
+    <div>
+      <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">Sobre</p>
+      <h1 class="mt-2 font-display text-4xl font-bold text-ink">{AUTHOR_NAME} Fagundes</h1>
+      <p class="mt-1 text-ink-muted">{AUTHOR_ROLE}</p>
+    </div>
+  </div>
 
   <div
-    class="prose prose-neutral mt-8 max-w-none
+    class="prose prose-neutral mt-10 max-w-none
            prose-headings:font-display prose-headings:text-ink
            prose-p:text-ink prose-p:leading-relaxed
-           prose-a:text-accent"
+           prose-a:text-accent
+           prose-li:text-ink prose-li:marker:text-accent"
   >
+    <p class="text-lg">Olá, eu sou o Emiliano Fagundes.</p>
+
     <p>
-      Sou founder da <strong>atoxfy</strong> e idealizador do <strong>Kikwiflow</strong>,
-      plataforma que conecta automação determinística e agentes de IA no ciclo de
-      desenvolvimento de software. Depois de anos construindo e operando sistemas em
-      bancos e empresas de tecnologia, decidi passar a documentar publicamente as
-      decisões técnicas e de produto por trás desse trabalho.
+      Iniciei minha jornada profissional como servente em canteiros de obras, passei pelo
+      suporte técnico e me consolidei como Tech Lead em sistemas financeiros de alta escala,
+      até dar o maior passo da minha carreira: fundar a <strong>atoxfy</strong>.
     </p>
+
     <p>
-      Este espaço existe para isso: notas técnicas, arquitetura, e a visão de mundo
-      que guia o que estou construindo — sem filtro corporativo, sem funil de
-      marketing. Só engenharia e as decisões de negócio que vêm junto com ela.
+      Em mais de 7 anos vivendo a trincheira da engenharia de software, entendi que a
+      tecnologia não existe para criar complexidade. Ela existe para conectar processos,
+      alavancar negócios e dar autonomia aos times.
     </p>
+
     <p>
-      Se você trabalha com engenharia, produto ou lidera times que usam IA no dia a
-      dia, é bem provável que a gente fale a mesma língua.
+      Mas, se tem algo que aprendi nessa travessia, é que o lugar de onde você vem não
+      determina até onde você vai. A diferença real está entre os limites físicos do mundo e
+      as barreiras que criamos na nossa própria mente.
     </p>
+
+    <p>
+      Para mim, o sucesso nunca foi sobre acumular títulos. É sobre ter liberdade para ser o
+      pai que eu não tive, proporcionar experiências reais para minha família, cuidar da
+      minha saúde e ter paz para pescar de vez em quando. Eu encaro minha carreira como meu
+      principal ativo financeiro, pois é ela que sustenta o que tenho de mais precioso. E um
+      ativo dessa magnitude não pode ser gerenciado com negligência.
+    </p>
+
+    <p>
+      A teoria é bonita, mas na prática, não existe atalho. Como não sou dono da verdade,
+      compartilho aqui as regras inegociáveis que adotei para pilotar a minha jornada:
+    </p>
+
+    <h2>Meus princípios de carreira</h2>
+    <p class="font-mono text-sm uppercase tracking-wide text-ink-soft">
+      Como eu piloto o meu principal ativo
+    </p>
+
+    <ol>
+      {
+        principles.map((principle) => (
+          <li>
+            <strong>{principle.title}:</strong> {principle.text}
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </BaseLayout>
