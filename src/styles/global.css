@@ -1,39 +1,75 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@import "@fontsource/source-serif-4/400.css";
-@import "@fontsource/source-serif-4/600.css";
-@import "@fontsource/source-serif-4/700.css";
-@import "@fontsource/source-serif-4/400-italic.css";
+@import "@fontsource/outfit/500.css";
+@import "@fontsource/outfit/600.css";
+@import "@fontsource/outfit/700.css";
+@import "@fontsource/outfit/800.css";
 @import "@fontsource-variable/inter";
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
 @import "@fontsource/jetbrains-mono/700.css";
 
 /*
-  Paleta "Editorial Técnico": fundo claro e quente, tipografia serif nos
-  títulos, sans no corpo, mono em labels/código, acento azul-petróleo.
+  Identidade e1000, derivada do sistema visual do Kikwiflow: "Business Mode"
+  (claro, acento violeta) e "Hacker Mode" (escuro, acento ciano) — a troca de
+  acento por tema é o próprio mecanismo de marca. Aqui, ajustado para leitura
+  longa: menos "produto", mais texto — cor com moderação, hierarquia com
+  tipografia (Outfit nos títulos, Inter no corpo, JetBrains Mono em código).
 */
 @theme {
-  --color-paper: #faf9f6;
-  --color-surface: #ffffff;
-  --color-ink: #1c1917;
-  --color-ink-muted: #57534e;
-  --color-ink-soft: #78716c;
-  --color-line: #e7e4de;
-  --color-accent: #114b5f;
-  --color-accent-strong: #0b3745;
-  --color-accent-soft: #dbe9ec;
-  --color-code: #f2efe9;
+  --color-paper: #ffffff;
+  --color-surface: #f8f7fc;
+  --color-ink: #020817;
+  --color-ink-muted: #475569;
+  --color-ink-soft: #64748b;
+  --color-line: #e2e8f0;
+  --color-accent: #7c3aed;
+  --color-accent-strong: #5b21b6;
+  --color-accent-soft: #ede9fe;
+  --color-code: #f6f5fb;
 
-  --font-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --radius-card: 0.75rem;
+  --radius-pill: 999px;
+}
+
+/* Hacker Mode — escuro, ciano sobre "ink" profundo. Segue o sistema do
+   Kikwiflow: respeita o SO por padrão, mas pode ser trocado manualmente
+   (data-theme em <html>, persistido em localStorage — ver Header.astro). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-paper: #020817;
+    --color-surface: #0f172a;
+    --color-ink: #f8fafc;
+    --color-ink-muted: #94a3b8;
+    --color-ink-soft: #64748b;
+    --color-line: #1e293b;
+    --color-accent: #00fdfa;
+    --color-accent-strong: #33fdfb;
+    --color-accent-soft: rgba(0, 253, 250, 0.14);
+    --color-code: #0c1424;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-paper: #020817;
+  --color-surface: #0f172a;
+  --color-ink: #f8fafc;
+  --color-ink-muted: #94a3b8;
+  --color-ink-soft: #64748b;
+  --color-line: #1e293b;
+  --color-accent: #00fdfa;
+  --color-accent-strong: #33fdfb;
+  --color-accent-soft: rgba(0, 253, 250, 0.14);
+  --color-code: #0c1424;
 }
 
 @layer base {
   html {
-    color-scheme: light;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
@@ -41,10 +77,12 @@
   body {
     @apply bg-paper text-ink font-sans;
     font-feature-settings: "cv11", "ss01";
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   ::selection {
-    @apply bg-accent-soft text-accent-strong;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
   }
 
   a {
@@ -54,34 +92,195 @@
   a:hover {
     @apply decoration-accent;
   }
+}
 
-  ::-moz-selection {
-    background: var(--color-accent-soft);
-    color: var(--color-accent-strong);
+/* Hairline de marca: o mesmo gradiente violeta → ciano → violeta do
+   Kikwiflow, tocado uma vez ao carregar a página e acomodado em opacidade
+   estática — não há estado "ao vivo" para refletir num blog. */
+.brand-hairline {
+  height: 2px;
+  background-image: linear-gradient(90deg, #5b21b6, #7c3aed, #00fdfa, #7c3aed, #5b21b6);
+  background-size: 200% 100%;
+  opacity: 0.8;
+  animation: hairline-intro 2.2s ease-out 1;
+}
+
+@keyframes hairline-intro {
+  0% {
+    background-position: 0% 50%;
+    opacity: 1;
+  }
+  100% {
+    background-position: 200% 50%;
+    opacity: 0.8;
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .brand-hairline {
+    animation: none;
+  }
+}
+
+/* Toggle claro/escuro: mostra o ícone do modo ATIVO no momento. */
+#theme-toggle .icon-moon {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #theme-toggle .icon-sun {
+    display: none;
+  }
+  :root:not([data-theme="light"]) #theme-toggle .icon-moon {
+    display: block;
+  }
+}
+
+:root[data-theme="dark"] #theme-toggle .icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] #theme-toggle .icon-moon {
+  display: block;
+}
+
 /*
-  Diagramas Mermaid: moldura consistente com o resto do editorial.
-  astro-mermaid marca o <pre> com [data-processed] após renderizar no
-  cliente e aplica seu próprio estilo com essa mesma especificidade, então
-  usamos !important aqui para garantir que a moldura do site prevaleça
-  nos dois estados (antes e depois da hidratação).
+  Grid de "breakout": o texto lê numa coluna confortável (~68ch), mas
+  blocos de código, diagramas Mermaid e mídia (vídeo/GIF) podem ocupar a
+  largura inteira do artigo — é o que faltava para o diagrama de sequência
+  ficar legível sem abandonar uma coluna de leitura limpa para o texto.
 */
-.mermaid-diagram-container,
-pre.mermaid,
-pre.mermaid[data-processed] {
-  margin-block: calc(var(--spacing) * 8) !important;
+.prose {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) min(68ch, 100%) minmax(0, 1fr);
+}
+
+.prose > * {
+  grid-column: 2;
+}
+
+.prose > pre,
+.prose > .breakout {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: min(100%, 64rem);
+  justify-self: center;
+}
+
+/* Diagramas Mermaid. astro-mermaid marca o <pre> com [data-processed]
+   após renderizar no cliente e aplica seu próprio estilo com a mesma
+   especificidade — !important garante que a moldura do site prevaleça
+   nos dois estados (antes e depois da hidratação). */
+.mermaid-frame {
+  position: relative;
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: min(100%, 64rem);
+  justify-self: center;
+}
+
+.mermaid-frame pre.mermaid,
+.mermaid-frame pre.mermaid[data-processed] {
+  margin-block: 0 !important;
   display: flex !important;
   justify-content: center !important;
-  border-radius: var(--radius-lg) !important;
+  border-radius: var(--radius-card) !important;
   border: 1px solid var(--color-line) !important;
   background-color: var(--color-surface) !important;
-  padding: calc(var(--spacing) * 4) !important;
+  padding: 1.5rem !important;
+  overflow: auto !important;
+}
+
+.mermaid-zoom-btn {
+  @apply absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-md border border-line bg-paper text-ink-muted no-underline shadow-sm transition-colors;
+}
+
+.mermaid-zoom-btn:hover {
+  @apply text-accent border-accent/40;
+}
+
+.mermaid-frame.is-zoomed {
+  position: fixed;
+  inset: clamp(0.75rem, 4vw, 3rem);
+  z-index: 100;
+  max-width: none;
+  display: flex;
+}
+
+.mermaid-frame.is-zoomed pre.mermaid {
+  width: 100% !important;
+  height: 100%;
+  margin: 0 !important;
+}
+
+.mermaid-frame.is-zoomed pre.mermaid svg {
+  height: auto;
+  max-height: 100%;
+}
+
+.mermaid-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: color-mix(in oklab, var(--color-ink) 55%, transparent);
+  backdrop-filter: blur(2px);
 }
 
 /* Estilização de blocos de código gerados pelo Shiki */
 pre.astro-code {
-  @apply rounded-lg border border-line p-4 text-sm leading-relaxed;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  padding: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
   font-family: var(--font-mono);
+  overflow-x: auto;
+}
+
+/* Tema duplo do Shiki: claro por padrão, escuro no sistema ou no toggle
+   manual — mesmo padrão de :root / media / [data-theme] usado no resto do site. */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .astro-code,
+  :root:not([data-theme="light"]) .astro-code span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg) !important;
+  }
+}
+
+:root[data-theme="dark"] .astro-code,
+:root[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* Vídeos curtos e GIFs embutidos direto no markdown (ver README) */
+figure.media-clip {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: min(100%, 64rem);
+  justify-self: center;
+  margin: 0;
+}
+
+figure.media-clip video,
+figure.media-clip img {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  background-color: var(--color-surface);
+}
+
+figure.media-clip figcaption {
+  margin-top: 0.625rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-ink-soft);
 }

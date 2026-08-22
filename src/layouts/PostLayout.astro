@@ -31,13 +31,14 @@ const formattedDate = pubDate.toLocaleDateString("pt-BR", {
   publishedTime={pubDate}
   updatedTime={updatedDate}
   tags={tags}
+  wide
 >
   <article>
-    <header class="mb-10">
+    <header class="mx-auto mb-10 max-w-3xl">
       <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">
         {formattedDate} · {readingMinutes} min de leitura
       </p>
-      <h1 class="mt-3 font-serif text-4xl font-bold leading-tight text-ink sm:text-5xl">
+      <h1 class="mt-3 font-display text-4xl font-bold leading-tight text-ink sm:text-5xl">
         {title}
       </h1>
       <p class="mt-4 text-lg text-ink-muted">{description}</p>
@@ -46,45 +47,94 @@ const formattedDate = pubDate.toLocaleDateString("pt-BR", {
 
     <div
       class="prose prose-neutral max-w-none
-             prose-headings:font-serif prose-headings:font-semibold prose-headings:text-ink
+             prose-headings:font-display prose-headings:font-semibold prose-headings:text-ink
              prose-p:text-ink prose-p:leading-relaxed
              prose-a:text-accent prose-a:no-underline prose-a:decoration-accent/40 hover:prose-a:underline
              prose-strong:text-ink
              prose-blockquote:border-accent prose-blockquote:text-ink-muted
              prose-code:font-mono prose-code:text-ink prose-code:before:content-none prose-code:after:content-none
-             prose-pre:bg-code prose-pre:border prose-pre:border-line
              prose-hr:border-line
-             prose-img:rounded-lg prose-img:border prose-img:border-line"
+             prose-img:rounded-xl prose-img:border prose-img:border-line"
     >
       <slot />
     </div>
 
-    <AuthorBio />
+    <div class="mx-auto max-w-3xl">
+      <AuthorBio />
 
-    {
-      (prevPost || nextPost) && (
-        <nav class="mt-12 grid grid-cols-1 gap-4 border-t border-line pt-8 sm:grid-cols-2">
-          {prevPost && (
-            <a href={`/blog/${prevPost.id}`} class="no-underline">
-              <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">← Anterior</p>
-              <p class="mt-1 font-serif text-ink transition-colors hover:text-accent">
-                {prevPost.data.title}
-              </p>
-            </a>
-          )}
-          {nextPost && (
-            <a
-              href={`/blog/${nextPost.id}`}
-              class:list={["no-underline", !prevPost && "sm:col-start-2 sm:text-right"]}
-            >
-              <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">Próximo →</p>
-              <p class="mt-1 font-serif text-ink transition-colors hover:text-accent">
-                {nextPost.data.title}
-              </p>
-            </a>
-          )}
-        </nav>
-      )
-    }
+      {
+        (prevPost || nextPost) && (
+          <nav class="mt-12 grid grid-cols-1 gap-4 border-t border-line pt-8 sm:grid-cols-2">
+            {prevPost && (
+              <a href={`/blog/${prevPost.id}`} class="no-underline">
+                <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">← Anterior</p>
+                <p class="mt-1 font-display text-ink transition-colors hover:text-accent">
+                  {prevPost.data.title}
+                </p>
+              </a>
+            )}
+            {nextPost && (
+              <a
+                href={`/blog/${nextPost.id}`}
+                class:list={["no-underline", !prevPost && "sm:col-start-2 sm:text-right"]}
+              >
+                <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">Próximo →</p>
+                <p class="mt-1 font-display text-ink transition-colors hover:text-accent">
+                  {nextPost.data.title}
+                </p>
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </div>
   </article>
 </BaseLayout>
+
+<script>
+  // Envolve cada diagrama Mermaid num frame com botão de zoom — o próprio
+  // diagrama pode ser bem mais largo que a coluna de leitura, então aqui
+  // ele ganha um modo "expandido" em overlay para ler com conforto.
+  function setupMermaidZoom() {
+    let backdrop = document.querySelector<HTMLElement>(".mermaid-backdrop");
+    if (!backdrop) {
+      backdrop = document.createElement("div");
+      backdrop.className = "mermaid-backdrop hidden";
+      document.body.appendChild(backdrop);
+    }
+
+    function closeAll() {
+      document.querySelectorAll(".mermaid-frame.is-zoomed").forEach((frame) => {
+        frame.classList.remove("is-zoomed");
+      });
+      backdrop?.classList.add("hidden");
+    }
+
+    backdrop.addEventListener("click", closeAll);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeAll();
+    });
+
+    document.querySelectorAll("pre.mermaid").forEach((pre) => {
+      if (pre.parentElement?.classList.contains("mermaid-frame")) return;
+
+      const frame = document.createElement("div");
+      frame.className = "mermaid-frame";
+      pre.parentElement?.insertBefore(frame, pre);
+      frame.appendChild(pre);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "mermaid-zoom-btn";
+      btn.setAttribute("aria-label", "Expandir diagrama");
+      btn.textContent = "⤢";
+      btn.addEventListener("click", () => {
+        const zoomed = frame.classList.toggle("is-zoomed");
+        backdrop?.classList.toggle("hidden", !zoomed);
+      });
+      frame.appendChild(btn);
+    });
+  }
+
+  setupMermaidZoom();
+</script>

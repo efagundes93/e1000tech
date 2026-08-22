@@ -23,7 +23,7 @@ const { posts } = Astro.props;
 
 <BaseLayout title={`#${tag}`} description={`Posts marcados com #${tag}`}>
   <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">Tag</p>
-  <h1 class="mb-8 font-serif text-3xl font-bold text-ink">#{tag}</h1>
+  <h1 class="mb-8 font-display text-3xl font-bold text-ink">#{tag}</h1>
   <div>
     {posts.map((post) => <PostCard post={post} />)}
   </div>

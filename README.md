@@ -5,9 +5,14 @@ Blog pessoal — engenharia, produto e as decisões por trás do [Kikwiflow](htt
 ## Stack
 
 - **Astro** (output estático) + **MDX/Markdown** via Content Collections (`src/content.config.ts`)
-- **Tailwind CSS v4** (plugin Vite) para os tokens de design — paleta "Editorial Técnico" (`src/styles/global.css`)
-- **Shiki** para realce de código (embutido no Astro)
-- **astro-mermaid** para diagramas ` ```mermaid ` (renderização client-side, tema `neutral`)
+- **Tailwind CSS v4** (plugin Vite) para os tokens de design — identidade derivada do Kikwiflow: Outfit
+  (títulos) + Inter (corpo) + JetBrains Mono (código), acento violeta no claro / ciano no escuro
+  (`src/styles/global.css`)
+- **Dark mode de verdade**: segue o sistema por padrão, com toggle manual persistido em `localStorage`
+  (botão sol/lua no `Header.astro`) — mesmo mecanismo de marca "Business Mode / Hacker Mode" do Kikwiflow
+- **Shiki** com tema duplo (`github-light` / `github-dark`) para realce de código
+- **astro-mermaid** para diagramas ` ```mermaid ` (renderização client-side, tema acompanha claro/escuro,
+  com um modo de zoom em overlay — diagramas grandes ficam pequenos numa coluna de leitura estreita)
 - **astro-og-canvas** para gerar as imagens de Open Graph em build-time, por post
 - **@astrojs/sitemap** + **@astrojs/rss** + JSON-LD (`BlogPosting`/`Person`) para SEO
 
@@ -40,6 +45,29 @@ O corpo aceita Markdown normal, blocos de código (` ```typescript `, ` ```java 
 > **Por que `.md` e não `.mdx`?** Os diagramas Mermaid são transformados em um bloco `<pre class="mermaid">` (nó HTML "raw"), e o compilador MDX desta versão do Astro não aceita nós HTML raw sem configuração extra. Arquivos `.md` passam pelo pipeline de Markdown padrão, que aceita normalmente. Use `.mdx` apenas em posts que realmente precisem de componentes Astro/React embutidos — e evite combinar com blocos mermaid nesse caso.
 
 Cada post ganha automaticamente: página em `/blog/<slug>`, entrada no RSS (`/rss.xml`), entrada no sitemap, imagem OG em `/og/<slug>.png`, e páginas de tag em `/tags/<tag>`.
+
+### Vídeos curtos e GIFs
+
+Coloque o arquivo em `public/media/` (crie subpastas por post se quiser organizar, ex: `public/media/meu-post/clipe.mp4`).
+
+**GIF** — funciona como qualquer imagem, o markdown padrão já cuida do estilo (borda, cantos arredondados):
+
+```markdown
+![Descrição do gif](/media/meu-post/demo.gif)
+```
+
+**Vídeo curto** (recomendado no lugar de GIF sempre que possível — arquivo bem menor pro mesmo resultado
+visual): cole o HTML diretamente no `.md`, o Markdown do Astro passa tags HTML cruas sem problema:
+
+```html
+<figure class="media-clip">
+  <video src="/media/meu-post/demo.mp4" autoplay muted loop playsinline></video>
+  <figcaption>Legenda opcional do clipe.</figcaption>
+</figure>
+```
+
+A classe `media-clip` já cuida do estilo (borda, cantos, largura) e também faz o clipe "estourar" a coluna
+de leitura até a largura total do artigo, igual aos blocos de código e diagramas Mermaid.
 
 ## Antes do primeiro deploy
 

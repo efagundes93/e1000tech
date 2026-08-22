@@ -13,7 +13,20 @@ export default defineConfig({
   integrations: [
     mermaid({
       theme: 'neutral',
-      autoTheme: false,
+      autoTheme: true,
+      mermaidConfig: {
+        themeVariables: {
+          fontSize: '18px',
+        },
+        sequence: {
+          actorFontSize: 16,
+          messageFontSize: 15,
+          noteFontSize: 14,
+          diagramMarginX: 30,
+          diagramMarginY: 20,
+          boxMargin: 10,
+        },
+      },
     }),
     mdx(),
     sitemap(),
@@ -23,7 +36,8 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: 'github-light',
+      themes: { light: 'github-light', dark: 'github-dark' },
+      defaultColor: false,
       wrap: true,
     },
   },

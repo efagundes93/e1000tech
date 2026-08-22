@@ -17,7 +17,7 @@ const { page } = Astro.props as { page: Page<CollectionEntry<"blog">> };
 ---
 
 <BaseLayout title="Posts" description="Todos os posts do e1000.">
-  <h1 class="mb-8 font-serif text-3xl font-bold text-ink">Posts</h1>
+  <h1 class="mb-8 font-display text-3xl font-bold text-ink">Posts</h1>
   <div>
     {page.data.map((post) => <PostCard post={post} />)}
   </div>

@@ -12,9 +12,13 @@ interface Props {
   publishedTime?: Date;
   updatedTime?: Date;
   tags?: string[];
+  /** Posts usam um main mais largo para que código/diagramas/mídia possam
+   * "estourar" a coluna de leitura — ver o grid em .prose no global.css. */
+  wide?: boolean;
 }
 
-const { title, description, image, type, publishedTime, updatedTime, tags } = Astro.props;
+const { title, description, image, type, publishedTime, updatedTime, tags, wide = false } =
+  Astro.props;
 ---
 
 <!doctype html>
@@ -33,10 +37,24 @@ const { title, description, image, type, publishedTime, updatedTime, tags } = As
       updatedTime={updatedTime}
       tags={tags}
     />
+    <script is:inline>
+      // Aplica o tema salvo (ou o do sistema) antes do primeiro paint, pra
+      // não piscar claro→escuro. O toggle mora no Header.
+      (function () {
+        var saved = null;
+        try {
+          saved = localStorage.getItem("e1000-theme");
+        } catch (e) {}
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      })();
+    </script>
   </head>
   <body class="flex min-h-screen flex-col">
     <Header />
-    <main class="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
+    <div class="brand-hairline"></div>
+    <main class:list={["mx-auto w-full flex-1 px-6 py-12", wide ? "max-w-6xl" : "max-w-3xl"]}>
       <slot />
     </main>
     <Footer />
