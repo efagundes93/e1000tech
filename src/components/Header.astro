@@ -5,11 +5,11 @@ const { pathname } = Astro.url;
 ---
 
 <header class="bg-paper/90 backdrop-blur">
-  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-5 sm:px-6">
     <a href="/" class="font-display text-xl font-semibold tracking-tight text-ink no-underline">
       {SITE_TITLE}<span class="text-accent">.</span>
     </a>
-    <nav class="flex items-center gap-6 text-sm">
+    <nav class="flex items-center gap-3 text-sm sm:gap-6">
       {
         NAV_LINKS.map((link) => {
           const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
