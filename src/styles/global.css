@@ -272,6 +272,28 @@
   overflow: auto !important;
 }
 
+/* O Tailwind Typography (.prose) aplica line-height e margens nos <p>/<div>
+   que o Mermaid injeta dentro dos rótulos (foreignObject). Isso infla a
+   altura real do texto além da caixa que o Mermaid calculou e corta a
+   última linha / os descendentes das letras. Zera dentro do diagrama. */
+.mermaid-frame :is(.nodeLabel, .edgeLabel, .cluster-label, .label),
+.mermaid-frame foreignObject :is(p, div, span) {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.3 !important;
+}
+
+/* Teto de tamanho no estado normal: só entra em ação em diagramas
+   realmente enormes, que viram um painel com rolagem em vez de dominar a
+   página — o botão "Expandir" abre a versão inteira em overlay. */
+.mermaid-frame:not(.is-zoomed) pre.mermaid {
+  max-height: 52rem;
+}
+
+.mermaid-frame:not(.is-zoomed) pre.mermaid svg {
+  height: auto;
+}
+
 .mermaid-frame.is-zoomed {
   position: fixed;
   inset: clamp(0.75rem, 4vw, 3rem);

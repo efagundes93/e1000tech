@@ -166,17 +166,17 @@ Você disponibiliza uma skill/md que indica que o comando "Implemente um Contrac
 
 ```mermaid
 flowchart TD
-    P["Prompt do dev: #quot;Implemente o ContractProcessor do Consignado#quot;"]
+    P["Prompt: #quot;implemente o ContractProcessor do Consignado#quot;"]
 
-    P --> A{O agente tem acesso à tool de geração?}
+    P --> A{Agente tem a<br/>tool de geração?}
 
-    A -- Não --> B["Modelo raciocina sobre TUDO:<br/>anotações, imports, Lombok,<br/>assinatura de métodos, de-para"]
-    B --> C["~2.500 tokens de contexto<br/>+ ~1.500 tokens de output"]
-    C --> D["Classe completa gerada<br/>(risco médio/alto de retrabalho)"]
+    A -- Não --> B["Raciocina sobre tudo:<br/>anotações, imports, Lombok, de-para"]
+    B --> C["~2.500 tokens de contexto<br/>+ ~1.500 de output"]
+    C --> D["Classe inteira gerada<br/>(risco médio/alto de retrabalho)"]
 
     A -- Sim --> E["Agente delega:<br/>chama o CLI local"]
-    E --> F["CLI gera a carcaça<br/>em ~10ms, custo zero de token"]
-    F --> G["Modelo raciocina só sobre<br/>o de-para (~300 + 200 tokens)"]
+    E --> F["CLI gera a carcaça<br/>~10ms, zero token"]
+    F --> G["Raciocina só sobre o de-para<br/>(~300 + 200 tokens)"]
     G --> H["Classe pronta,<br/>carcaça validada pelo compilador"]
 
     style E fill:#7c3aed,stroke:#c4b5fd,stroke-width:1px,color:#fff
@@ -259,11 +259,11 @@ O primeiro desafio foi de reaproveitamento: eu não queria manter a lógica de g
 
 ```mermaid
 flowchart TB
-    CORE["packages/kikwi-codegen (novo)<br/>templates Java + beanLocator + wrapper do runLinter<br/>— zero vscode, zero React, zero jszip"]
+    CORE["packages/kikwi-codegen (núcleo, novo)<br/>templates Java · beanLocator · runLinter<br/>sem vscode / React / jszip"]
 
-    WEB["apps/modeler-web<br/>+ kikwiProjectGenerator.ts (jszip/file-saver, browser-only)<br/>= só Initializr"]
-    EXT["apps/vscode-kikwi<br/>+ orquestração vscode.window.* (prompts/QuickPick)<br/>+ Problems panel já usa runLinter<br/>= autossuficiente, bundlada no .vsix"]
-    CLI["apps/kikwi-cli (novo)<br/>+ orquestração fs/glob puro (sem vscode.*)<br/>+ flags/JSON output/exit codes<br/>= scriptável, voltado a agente"]
+    WEB["apps/modeler-web<br/>+ project generator (browser-only)<br/>= só o Initializr"]
+    EXT["apps/vscode-kikwi<br/>orquestra vscode.window.* + Problems panel<br/>= autossuficiente, no .vsix"]
+    CLI["apps/kikwi-cli (novo)<br/>fs/glob puro, sem vscode.* + flags/JSON<br/>= scriptável, voltado a agente"]
 
     CORE --> WEB
     CORE --> EXT
