@@ -1,0 +1,42 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+
+// Só H2 e H3 no índice: H1 é o título do post (fica fora do body) e H4+
+// vira ruído demais para um índice pensado pra escanear rápido.
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length > 1 && (
+    // Em telas estreitas isto vira um cartão no topo do artigo (mesmo lugar
+    // de sempre). A partir de xl, .post-grid abre uma segunda coluna e este
+    // <aside> vira barra lateral fixa (position: sticky) — some com o
+    // cartão/moldura e passa a funcionar como um "go-to" sempre visível
+    // enquanto o leitor rola a página, com o item ativo destacado via JS
+    // (ver setupTocSpy em PostLayout.astro).
+    <aside class="post-toc-col" aria-label="Índice do artigo">
+      <nav class="post-toc">
+        <p class="post-toc__label">Neste artigo</p>
+        <ol class="post-toc__list">
+          {items.map((heading) => (
+            <li class:list={["post-toc__item", heading.depth === 3 && "post-toc__item--sub"]}>
+              <a href={`#${heading.slug}`} class="post-toc__link">
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </aside>
+  )
+}

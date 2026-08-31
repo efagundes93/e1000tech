@@ -193,36 +193,83 @@
   justify-self: center;
 }
 
-/* Diagramas Mermaid. astro-mermaid marca o <pre> com [data-processed]
-   após renderizar no cliente e aplica seu próprio estilo com a mesma
-   especificidade — !important garante que a moldura do site prevaleça
-   nos dois estados (antes e depois da hidratação). */
-.mermaid-frame {
-  position: relative;
+/*
+  Moldura compartilhada por código, diagramas e (futuramente) outros blocos
+  "de sistema": cartão com cabeçalho (rótulo em mono/uppercase à esquerda,
+  ação à direita) — o mesmo idioma visual das etiquetas já usadas no resto
+  do site ("Neste artigo", tags, datas). Ter um único par de classes pros
+  dois casos é o que faz código e diagrama lerem como parte do mesmo
+  sistema, em vez de dois tratamentos ad-hoc.
+*/
+.block-frame {
   grid-column: 1 / -1;
   width: 100%;
   max-width: min(100%, 64rem);
   justify-self: center;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  overflow: hidden;
+  background-color: var(--color-paper);
 }
 
+.block-frame__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.block-frame__label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-soft);
+}
+
+.block-frame__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-ink-soft);
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.block-frame__action:hover,
+.block-frame__action:focus-visible {
+  color: var(--color-accent);
+  border-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
+  background-color: var(--color-accent-soft);
+}
+
+.block-frame__action.is-active {
+  color: var(--color-accent);
+}
+
+/* Diagramas Mermaid. astro-mermaid marca o <pre> com [data-processed]
+   após renderizar no cliente e aplica seu próprio estilo com a mesma
+   especificidade — !important garante que a moldura do site prevaleça
+   nos dois estados (antes e depois da hidratação). */
 .mermaid-frame pre.mermaid,
 .mermaid-frame pre.mermaid[data-processed] {
-  margin-block: 0 !important;
+  margin: 0 !important;
   display: flex !important;
   justify-content: center !important;
-  border-radius: var(--radius-card) !important;
-  border: 1px solid var(--color-line) !important;
+  border: none !important;
+  border-radius: 0 !important;
   background-color: var(--color-surface) !important;
   padding: 1.5rem !important;
   overflow: auto !important;
-}
-
-.mermaid-zoom-btn {
-  @apply absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-md border border-line bg-paper text-ink-muted no-underline shadow-sm transition-colors;
-}
-
-.mermaid-zoom-btn:hover {
-  @apply text-accent border-accent/40;
 }
 
 .mermaid-frame.is-zoomed {
@@ -231,11 +278,13 @@
   z-index: 100;
   max-width: none;
   display: flex;
+  flex-direction: column;
 }
 
 .mermaid-frame.is-zoomed pre.mermaid {
+  flex: 1 1 auto;
   width: 100% !important;
-  height: 100%;
+  min-height: 0;
   margin: 0 !important;
 }
 
@@ -250,6 +299,108 @@
   z-index: 90;
   background: color-mix(in oklab, var(--color-ink) 55%, transparent);
   backdrop-filter: blur(2px);
+}
+
+/* Bloco de código Shiki, envolvido em runtime pelo mesmo .block-frame dos
+   diagramas (ver setupCodeFrames em PostLayout.astro) — cabeçalho com a
+   linguagem e um botão de copiar. */
+.code-frame pre.astro-code {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* Tabelas GFM: linhas com texto longo por célula (como comparativos de
+   custo) facilmente estouram a coluna de leitura. Ocupam a largura cheia
+   do artigo, igual código e diagramas, e ganham rolagem horizontal própria
+   — display:block preserva o layout de tabela internamente mas permite
+   overflow-x, então a página nunca rola na horizontal por causa dela. */
+.prose > table {
+  grid-column: 1 / -1;
+  display: block;
+  width: 100%;
+  max-width: min(100%, 64rem);
+  justify-self: center;
+  overflow-x: auto;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+}
+
+/* Cabeçalho no mesmo idioma visual do rótulo de código/diagrama (mono,
+   uppercase, tom soft) e zebra sutil nas linhas — sem isso a tabela do
+   plugin de tipografia lê como um bloco de texto corrido, destoando da
+   moldura que código e diagrama já ganharam. */
+.prose > table thead th {
+  white-space: nowrap;
+  background-color: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-soft);
+}
+
+.prose > table tbody tr:nth-child(even) {
+  background-color: color-mix(in oklab, var(--color-surface) 60%, transparent);
+}
+
+.prose > table th,
+.prose > table td {
+  padding: 0.7rem 1rem;
+}
+
+/* Comparativo de prompts lado a lado (ex.: "sem tool" vs "com tool" no
+   post do FinOps). Breakout de largura total como código/tabela — dois
+   cards colados fica apertado dentro da coluna de 56rem — mas empilha
+   em telas estreitas porque cada card já tem seu próprio scroll de código. */
+.prose > .prompt-compare {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: min(100%, 64rem);
+  justify-self: center;
+}
+
+@media (max-width: 40rem) {
+  .prose > .prompt-compare {
+    grid-template-columns: 1fr;
+  }
+}
+
+.prompt-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  background-color: var(--color-surface);
+  padding: 1.25rem;
+}
+
+.prompt-card > p:first-child {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-ink-soft);
+}
+
+/* Diferente dos blocos de código "de verdade" (que preservam
+   white-space:pre pra não perder indentação), estes são prompts em prosa
+   corrida sem estrutura de tabulação — então aqui é seguro, e melhor pra
+   leitura, quebrar linha em vez de forçar rolagem horizontal no card. */
+.prompt-card pre.astro-code {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.prompt-card--lean {
+  border-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-line));
 }
 
 /* Estilização de blocos de código gerados pelo Shiki */
@@ -309,4 +460,110 @@ figure.media-clip figcaption {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   color: var(--color-ink-soft);
+}
+
+/*
+  Grid do post: uma coluna em telas estreitas (índice em cartão no topo,
+  ordem: índice → conteúdo, via `order`), duas a partir de xl — conteúdo à
+  esquerda e índice fixo (position: sticky) à direita, sempre visível
+  enquanto o leitor rola, funcionando como um "go-to" do artigo. O cabeçalho
+  do site não é fixo, então um `top` modesto já evita colisão.
+*/
+.post-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+}
+
+.post-content {
+  min-width: 0;
+}
+
+.post-toc-col {
+  order: -1;
+}
+
+.post-toc {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  background-color: var(--color-surface);
+  padding: 1.5rem;
+}
+
+.post-toc__label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-soft);
+}
+
+.post-toc__list {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.post-toc__item {
+  line-height: 1.35;
+}
+
+.post-toc__item--sub {
+  margin-left: 1rem;
+  font-size: 0.875rem;
+}
+
+.post-toc__link {
+  display: block;
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.post-toc__link:hover {
+  color: var(--color-accent);
+}
+
+@media (min-width: 80rem) {
+  .post-grid {
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    align-items: start;
+  }
+
+  .post-content {
+    grid-column: 1;
+  }
+
+  .post-toc-col {
+    grid-column: 2;
+    order: 0;
+    position: sticky;
+    top: 2rem;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+  }
+
+  /* Sem moldura de cartão na barra lateral — a hairline por item já marca
+     a trilha, e o cartão fecharia demais numa coluna de 16rem. */
+  .post-toc {
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .post-toc__link {
+    padding-left: 0.875rem;
+    border-left: 1px solid var(--color-line);
+    font-size: 0.875rem;
+  }
+
+  .post-toc__link.is-active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+    font-weight: 500;
+  }
 }

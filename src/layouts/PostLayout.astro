@@ -3,15 +3,23 @@ import type { CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
 import TagList from "../components/TagList.astro";
 import AuthorBio from "../components/AuthorBio.astro";
+import TableOfContents from "../components/TableOfContents.astro";
 import { estimateReadingTime } from "../lib/readingTime";
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
 
 interface Props {
   post: CollectionEntry<"blog">;
   prevPost?: CollectionEntry<"blog">;
   nextPost?: CollectionEntry<"blog">;
+  headings?: Heading[];
 }
 
-const { post, prevPost, nextPost } = Astro.props;
+const { post, prevPost, nextPost, headings = [] } = Astro.props;
 const { title, description, pubDate, updatedDate, tags } = post.data;
 const readingMinutes = estimateReadingTime(post.body ?? "");
 
@@ -45,51 +53,58 @@ const formattedDate = pubDate.toLocaleDateString("pt-BR", {
       {tags.length > 0 && <TagList tags={tags} class="mt-5" />}
     </header>
 
-    <div
-      class="prose prose-neutral prose-lg max-w-none
-             prose-headings:font-display prose-headings:font-semibold
-             prose-p:leading-relaxed
-             prose-a:no-underline prose-a:decoration-accent/40 hover:prose-a:underline
-             prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
-             prose-img:rounded-xl prose-img:border prose-img:border-line"
-    >
-      <slot />
-    </div>
+    <div class="post-grid">
+      <div class="post-content">
+        <div
+          class="prose prose-neutral prose-lg max-w-none
+                 prose-headings:font-display prose-headings:font-semibold
+                 prose-p:leading-relaxed
+                 prose-a:no-underline prose-a:decoration-accent/40 hover:prose-a:underline
+                 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
+                 prose-img:rounded-xl prose-img:border prose-img:border-line"
+        >
+          <slot />
+        </div>
 
-    <div class="mx-auto max-w-4xl">
-      <AuthorBio />
+        <div class="mx-auto max-w-4xl">
+          <AuthorBio />
 
-      {
-        (prevPost || nextPost) && (
-          <nav class="mt-12 grid grid-cols-1 gap-4 border-t border-line pt-8 sm:grid-cols-2">
-            {prevPost && (
-              <a href={`/blog/${prevPost.id}`} class="no-underline">
-                <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">← Anterior</p>
-                <p class="mt-1 font-display text-ink transition-colors hover:text-accent">
-                  {prevPost.data.title}
-                </p>
-              </a>
-            )}
-            {nextPost && (
-              <a
-                href={`/blog/${nextPost.id}`}
-                class:list={["no-underline", !prevPost && "sm:col-start-2 sm:text-right"]}
-              >
-                <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">Próximo →</p>
-                <p class="mt-1 font-display text-ink transition-colors hover:text-accent">
-                  {nextPost.data.title}
-                </p>
-              </a>
-            )}
-          </nav>
-        )
-      }
+          {
+            (prevPost || nextPost) && (
+              <nav class="mt-12 grid grid-cols-1 gap-4 border-t border-line pt-8 sm:grid-cols-2">
+                {prevPost && (
+                  <a href={`/blog/${prevPost.id}`} class="no-underline">
+                    <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">← Anterior</p>
+                    <p class="mt-1 font-display text-ink transition-colors hover:text-accent">
+                      {prevPost.data.title}
+                    </p>
+                  </a>
+                )}
+                {nextPost && (
+                  <a
+                    href={`/blog/${nextPost.id}`}
+                    class:list={["no-underline", !prevPost && "sm:col-start-2 sm:text-right"]}
+                  >
+                    <p class="font-mono text-xs uppercase tracking-wide text-ink-soft">Próximo →</p>
+                    <p class="mt-1 font-display text-ink transition-colors hover:text-accent">
+                      {nextPost.data.title}
+                    </p>
+                  </a>
+                )}
+              </nav>
+            )
+          }
+        </div>
+      </div>
+
+      <TableOfContents headings={headings} />
     </div>
   </article>
 </BaseLayout>
 
 <script>
-  // Envolve cada diagrama Mermaid num frame com botão de zoom — o próprio
+  // Envolve cada diagrama Mermaid num frame com cabeçalho (rótulo + botão de
+  // zoom) — o mesmo padrão visual do frame de código logo abaixo. O próprio
   // diagrama pode ser bem mais largo que a coluna de leitura, então aqui
   // ele ganha um modo "expandido" em overlay para ler com conforto.
   function setupMermaidZoom() {
@@ -116,22 +131,142 @@ const formattedDate = pubDate.toLocaleDateString("pt-BR", {
       if (pre.parentElement?.classList.contains("mermaid-frame")) return;
 
       const frame = document.createElement("div");
-      frame.className = "mermaid-frame";
+      frame.className = "block-frame mermaid-frame";
       pre.parentElement?.insertBefore(frame, pre);
-      frame.appendChild(pre);
+
+      const header = document.createElement("div");
+      header.className = "block-frame__header";
+
+      const label = document.createElement("span");
+      label.className = "block-frame__label";
+      label.textContent = "Diagrama";
+      header.appendChild(label);
 
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "mermaid-zoom-btn";
+      btn.className = "block-frame__action";
       btn.setAttribute("aria-label", "Expandir diagrama");
-      btn.textContent = "⤢";
+      btn.textContent = "Expandir";
       btn.addEventListener("click", () => {
         const zoomed = frame.classList.toggle("is-zoomed");
         backdrop?.classList.toggle("hidden", !zoomed);
+        btn.textContent = zoomed ? "Fechar" : "Expandir";
+        btn.setAttribute("aria-label", zoomed ? "Fechar diagrama" : "Expandir diagrama");
       });
-      frame.appendChild(btn);
+      header.appendChild(btn);
+
+      frame.append(header, pre);
     });
   }
 
+  // Envolve cada bloco de código Shiki num frame com cabeçalho mostrando a
+  // linguagem e um botão de copiar — o padrão que falta pra alinhar código,
+  // tabela e diagrama num mesmo sistema visual (mesma moldura, mesmo rótulo
+  // em mono/uppercase já usado no resto do site). Blocos dentro de
+  // .prompt-card ficam de fora: já têm seu próprio cartão comparativo.
+  const CODE_LANG_LABELS: Record<string, string> = {
+    ts: "TypeScript",
+    tsx: "TypeScript",
+    typescript: "TypeScript",
+    js: "JavaScript",
+    jsx: "JavaScript",
+    javascript: "JavaScript",
+    java: "Java",
+    kt: "Kotlin",
+    kotlin: "Kotlin",
+    json: "JSON",
+    jsonc: "JSON",
+    bash: "Bash",
+    sh: "Shell",
+    shell: "Shell",
+    zsh: "Shell",
+    yaml: "YAML",
+    yml: "YAML",
+    html: "HTML",
+    css: "CSS",
+    sql: "SQL",
+    python: "Python",
+    py: "Python",
+    diff: "Diff",
+    xml: "XML",
+    plaintext: "Texto",
+    text: "Texto",
+    markdown: "Markdown",
+    md: "Markdown",
+  };
+
+  function setupCodeFrames() {
+    document.querySelectorAll<HTMLPreElement>("pre.astro-code").forEach((pre) => {
+      if (pre.closest(".prompt-card")) return;
+      if (pre.parentElement?.classList.contains("code-frame")) return;
+
+      const frame = document.createElement("div");
+      frame.className = "block-frame code-frame";
+      pre.parentElement?.insertBefore(frame, pre);
+
+      const header = document.createElement("div");
+      header.className = "block-frame__header";
+
+      const lang = (pre.getAttribute("data-language") ?? "").toLowerCase();
+      const label = document.createElement("span");
+      label.className = "block-frame__label";
+      label.textContent = CODE_LANG_LABELS[lang] ?? (lang || "Código");
+      header.appendChild(label);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "block-frame__action";
+      btn.textContent = "Copiar";
+      btn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(pre.textContent ?? "");
+          btn.textContent = "Copiado!";
+          btn.classList.add("is-active");
+        } catch {
+          btn.textContent = "Não foi possível copiar";
+        }
+        setTimeout(() => {
+          btn.textContent = "Copiar";
+          btn.classList.remove("is-active");
+        }, 1600);
+      });
+      header.appendChild(btn);
+
+      frame.append(header, pre);
+    });
+  }
+
+  // Destaca no índice lateral o título correspondente ao trecho que está
+  // sendo lido — é o que faz a barra fixa funcionar como um "go-to" de
+  // verdade, e não só uma lista estática de links.
+  function setupTocSpy() {
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".post-toc__link"));
+    if (!links.length) return;
+
+    const targets = links
+      .map((link) => {
+        const id = link.getAttribute("href")?.slice(1);
+        const heading = id ? document.getElementById(id) : null;
+        return heading ? { link, heading } : null;
+      })
+      .filter((t): t is { link: HTMLAnchorElement; heading: HTMLElement } => t !== null);
+
+    if (!targets.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const target = targets.find((t) => t.heading === entry.target);
+          target?.link.classList.toggle("is-active", entry.isIntersecting);
+        });
+      },
+      { rootMargin: "-15% 0px -70% 0px" }
+    );
+
+    targets.forEach((t) => observer.observe(t.heading));
+  }
+
   setupMermaidZoom();
+  setupCodeFrames();
+  setupTocSpy();
 </script>

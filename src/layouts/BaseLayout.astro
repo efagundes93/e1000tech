@@ -13,7 +13,8 @@ interface Props {
   updatedTime?: Date;
   tags?: string[];
   /** Posts usam um main mais largo para que código/diagramas/mídia possam
-   * "estourar" a coluna de leitura — ver o grid em .prose no global.css. */
+   * "estourar" a coluna de leitura — ver o grid em .prose no global.css —
+   * e para sobrar espaço lateral pro índice fixo (ver .post-grid). */
   wide?: boolean;
 }
 
@@ -54,7 +55,7 @@ const { title, description, image, type, publishedTime, updatedTime, tags, wide 
   <body class="flex min-h-screen flex-col">
     <Header />
     <div class="brand-hairline"></div>
-    <main class:list={["mx-auto w-full flex-1 px-6 py-12", wide ? "max-w-6xl" : "max-w-3xl"]}>
+    <main class:list={["mx-auto w-full flex-1 px-6 py-12", wide ? "max-w-7xl" : "max-w-3xl"]}>
       <slot />
     </main>
     <Footer />
