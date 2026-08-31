@@ -14,7 +14,7 @@ Essa troca de IDE não nasce de insatisfação com o IntelliJ — ele continua s
 
 Vou explicar o meu contexto a seguir. Não é receita de bolo nem metodologia única — é uma entre várias alternativas possíveis. O que importa é a lógica estratégica por trás, pra você conseguir derivar o que fizer sentido na sua realidade.
 
-## O Padrão Oculto: Como a maturidade do projeto revela repetições
+## Como a maturidade do projeto revela repetições
 
 Se você já tem alguns anos de experiência e passou por projetos grandes que usam Java, deve ter percebido que, à medida que o devteam e a cultura tech da empresa amadurecem, naturalmente começam a aparecer padrões: uma hora alguém cria um padrão de REST client, de producer, de consumer e até mesmo padrões de integrações. É algo natural: o projeto começa muitas vezes de uma forma "bagunçada" e, à medida que o time entende os padrões, passa a aplicá-los.
 
@@ -189,7 +189,7 @@ A diferença não é só de tamanho de texto — é de superfície de erro. No p
 
 Na prática, o dev não gasta tokens do agente tentando reescrever anotações do Spring, injeções do Lombok ou chamadas de repositório: a classe Java nasce pré-preenchida em milissegundos assim que o copiloto aciona o comando, e o raciocínio do modelo fica reservado exclusivamente pro bloco marcado com a regra de negócio.
 
-## Mini-tutorial: montando o CLI e a skill
+## Montando um CLI e a skill
 
 Se quiser reproduzir a ideia no seu contexto, o esqueleto é menor do que parece. Três arquivos:
 
@@ -247,7 +247,7 @@ Só que essa facilidade tem um efeito colateral que vale nomear: se criar ficou 
 Esse exemplo não conta a história toda, mas dá pra pescar a ideia — e não estou reinventando a roda. Quando o dev clica com o botão direito e pede pra IDE gerar getters e setters, é basicamente a mesma lógica. Só estou conectando pontos: se há padrão, você não precisa refazer na mão nem delegar ao modelo — pode gerar de forma determinística e deixar pro modelo só o que é "terreno novo".
 
 
-## Legal, mas como isso se liga à IDE e por que estou migrando para o VSCode?
+## O que isso tem a ver com IDE?
 
 Quando eu trabalhava com Camunda, tinha uma coisa que me incomodava bastante: a falta de integração entre o ambiente de modelagem/diagramação e o de desenvolvimento. Modelar era uma coisa, codar era outra, e toda vez que precisava ajustar um diagrama, lá ia eu trocar de janela.
 
@@ -292,7 +292,7 @@ A lógica que explicitei ali em cima não tem nenhum segredo de mercado — é c
 <!-- TODO: inserir aqui gif/webm curto (5-8s) mostrando o AGENTE invocando o comando da extensão e o arquivo Java nascendo pronto na árvore do projeto — não o fluxo manual via Command Palette. Adicionar alt-text descritivo. -->
 
 
-## DevEx como centro de custos e governança na era da IA
+## A nova cara da Developer Experience
 
 Essa abordagem traz um aprendizado corporativo: o papel da Developer Experience (DevEx) mudou fundamentalmente.
 
@@ -307,7 +307,7 @@ Deixar que cada desenvolvedor crie prompts livres para gerar estruturas que pode
 
 Pensar em Developer Experience, deixou de ser um luxo de engenharia para se tornar uma decisão estratégica de eficiência financeira. O time de engenharia do futuro não constrói apenas pipelines de CI/CD; ele desenvolve as ferramentas e restrições para que humanos e agentes trabalhem juntos com máxima precisão e menor custo.
 
-## A matemática do FinOps: Quanto custa a falta de padrão?
+## FinOps: Quanto custa a falta de padrão?
 
 Para deixar a conta tangível, vamos **simular** o impacto financeiro e de performance ao implementar 50 novas classes de serviço/strategy em um projeto enterprise ao longo de um ciclo de desenvolvimento. Os números abaixo não são telemetria de produção — são uma estimativa didática, construída a partir de ordens de grandeza reais de prompt e output, pra tornar tangível uma economia que, na prática, você só vai medir de verdade com os tokens do seu próprio time:
 
@@ -326,7 +326,7 @@ Se multiplicarmos esse cenário por um departamento de engenharia com dezenas de
 
 Essa conta tem um lado que a tabela não mostra: boilerplate gerado tem custo de manutenção. Toda vez que o template muda — uma anotação nova do Spring, uma versão diferente do framework, um campo a mais na entidade — alguém precisa lembrar de atualizar o gerador, e não só a próxima classe que nascer dele. É dívida técnica centralizada, o que é bom (você conserta em um lugar só) e ruim ao mesmo tempo (esse lugar vira um ponto único de falha se ninguém cuidar dele). Essa conta só fecha se a empresa tiver uma cultura de DevEx de verdade, plugada no dia a dia dos times — não uma iniciativa isolada de uma pessoa entusiasmada, mas uma prática que o time sustenta, revisita e atualiza junto com o resto do código. Sem isso, você não elimina o problema do boilerplate desatualizado, só muda ele de lugar.
 
-## O segredo não mudou: Organização é a chave
+## O grande segredo (rsrs): Organização é a chave
 
 No final do dia, essa jornada de migração do IntelliJ para o VSCode me trouxe uma provocação muito maior do que uma simples troca de IDE: o segredo para a alta performance no desenvolvimento de software não mudou.
 
