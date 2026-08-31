@@ -335,13 +335,7 @@ Seja codando na unha, seja orquestrando agentes autônomos, quanto mais organiza
 A diferença é que agora o "desenvolvedor do futuro" precisa passar por um processo quase que de autoconhecimento da sua própria arquitetura:
 
 1. Mapear criticamente os padrões do seu código que são repetitivos.
-2. Delimitar exatamente o que deve ser gerado de forma determinística (com custo zero e 100% de precisão).
-3. Entregar para os modelos de IA apenas a camada de inteligência e variação real.
+2. Delimitar exatamente o que deve ser gerado de forma determinística ou manual.
+3. Entregar para os modelos de IA apenas a camada de inteligência e variação real, sempre especificando como gostaria de receber a especificação.
 
 A Developer Experience (DevEx) deixou de ser sobre perfumaria ou preferências pessoais de atalhos de teclado. Ela virou a espinha dorsal da eficiência financeira e da governança na era da Inteligência Artificial.
-
-Se a sua IDE ou seu ecossistema atual limitam a autonomia do seu agente e te forçam a gastar dinheiro gerando boilerplate, não é a sua estratégia de IA que precisa mudar — é o seu ambiente.
-
-É claro que desapegar do IntelliJ deixa marcas. A navegação, refatoração profunda e análise estática dele ainda são impecáveis. Mas, no momento em que você passa a enxergar a IDE não mais como um editor isolado, e sim como um sistema operacional onde humanos e agentes colaboram, o VSCode ganha por sua leveza, extensibilidade e ecossistema aberto.
-
-No fim das contas, a minha migração não é sobre rebaixar o Java, mas sobre entender a evolução do nosso papel: deixamos de ser digitadores de boilerplate para nos tornarmos arquitetos do ambiente onde a IA trabalha.
